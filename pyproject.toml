@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "argforge"
+version = "1.0.9"
+description = "Structured argumentation (ASPIC+) with verified semantics, explanations and theory generation"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "clingo==5.8.2",
+    "cffi==1.17.1",
+    "pycparser==2.23",
+    "pywin32==311; sys_platform == 'win32'",
+]
+
+[tool.setuptools.packages.find]
+include = ["argforge*", "engine*", "argforge_platform*", "explanation_and_analysis*"]
+
+[tool.setuptools.package-data]
+engine = ["asp/*.lp"]
