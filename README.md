@@ -599,9 +599,9 @@ There is no uniform distribution over an infinite argument population.
 
 **Representation-sensitive measures.**
 - Per-argument strengths and argument counts describe the representatives.
-- Role-collapsed strengths and the declared invariant features are the same for every construction (a separate, written theorem).
+- Role-collapsed strengths and the declared invariant features are the same for every construction.
 
-**Proof status.** The proofs are written mathematical arguments. They are not machine-checked proofs of the Python code; the link between proof and code also depends on serialization, the observer definitions, worklist completion and resource-status handling.
+**Proof status.** The arguments in this section are written mathematical arguments. They are not machine-checked proofs of the Python code; the link between proof and code also depends on serialization, the observer definitions, worklist completion and resource-status handling.
 
 ### 7.5 Why it is the default
 
@@ -630,7 +630,7 @@ As target information it keeps only the descriptors of attackable sub-arguments.
 
 **Maintenance rule.** If future attacks, preferences, annotations or explanations read information that a signature does not keep, that signature's preservation claim must be reopened.
 
-**Class-identity regression.** A test checks that representatives keep apart arguments that differ only in their last defeasible rules. It covers both quotient policies and is checked against an independent recomputation.
+**Class identity.** Representatives keep apart arguments that differ only in their last defeasible rules, under both quotient policies; this was checked during development against an independent recomputation.
 
 ## 8. Implementation
 
@@ -728,17 +728,12 @@ It rejects malformed or forged certificates. A certificate is relative to the ev
 
 ### Generators
 
-**Constrained generator.**
-- **What it does:** produces small theories with exactly the requested counts, depth, breadth and features. Every claim is verified through parsing, construction and relations, plus semantic solving only when a semantic target needs it.
-- **When nothing fits:** if no theory is found within the search budget, it says so and does not claim impossibility.
-- **Audit:** every feature, count, depth and breadth claim was re-checked from the exported text with an independent oracle: 35 generated theories, 0 violations, and every requested recursion is reachable from the facts.
-
 **Seeded random generator.**
 - **What it does:** reproducible from the seed. In varied mode, each seed also draws its own size and mix of ingredients.
 - **Guarantees:** every rule can fire; no rule is repeated, subsumed, or paired with the opposite conclusion from the same body; axioms are consistent.
 - **Counts:** requested counts are proposals. The counts actually produced are reported, together with provenance.
 
-Neither generator samples uniformly from all ASPIC+ theories, and filtering for semantic targets biases the sample further. A timeout is not evidence of impossibility.
+The generator does not sample uniformly from all ASPIC+ theories, and filtering the sample (for example by size) biases it further.
 
 
 ## English–Turkish dictionary
