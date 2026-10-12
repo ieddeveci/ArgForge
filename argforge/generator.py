@@ -54,6 +54,9 @@ class GeneratorParams:
     transposition: bool = False
 
     def __post_init__(self):
+        for name in ("acyclic", "transposition"):
+            if type(getattr(self, name)) is not bool:
+                raise ValueError("%s must be True or False" % name)
         for name in ("atoms", "premises", "axioms", "rules", "max_antecedents"):
             value = getattr(self, name)
             if type(value) is not int or value < 0:
@@ -86,7 +89,7 @@ class GeneratorParams:
             "premise_conflicts",
         ):
             value = getattr(self, name)
-            if not isinstance(value, (int, float)) or not 0.0 <= value <= 1.0:
+            if isinstance(value, bool) or not isinstance(value, (int, float)) or not 0.0 <= value <= 1.0:
                 raise ValueError("%s must be a probability in [0, 1]" % name)
 
     def to_dict(self):
@@ -98,6 +101,8 @@ def _neg(literal):
 
 
 def generate_source(seed, params=None):
+    if type(seed) is not int or seed < 0:
+        raise ValueError("seed must be a non-negative integer")
     p = params if isinstance(params, GeneratorParams) else GeneratorParams(**(params or {}))
     rng = Mulberry32(seed)
     atoms = ["a%d" % (i + 1) for i in range(p.atoms)]
@@ -342,6 +347,12 @@ def sample(
     max_attempts=None,
 ):
     from .api import solve
+
+    for name, value in (("count", count), ("start", start), ("max_arguments", max_arguments), ("min_arguments", min_arguments)):
+        if type(value) is not int or value < 0:
+            raise ValueError("%s must be a non-negative integer" % name)
+    if max_attempts is not None and (type(max_attempts) is not int or max_attempts < 0):
+        raise ValueError("max_attempts must be None or a non-negative integer")
 
     def params_for(seed):
         if callable(params):

@@ -253,7 +253,7 @@ class SolverConfig:
 def _limits(timeout):
     if timeout is None:
         return None
-    if not (isinstance(timeout, (int, float)) and 0 < timeout <= 3600):
+    if isinstance(timeout, bool) or not (isinstance(timeout, (int, float)) and 0 < timeout <= 3600):
         raise ValueError("timeout must be a number of seconds in (0, 3600]")
     seconds = {k: float(timeout) for k in asdict(Limits()) if k.endswith("_seconds")}
     return Limits(time_only=True, **seconds)
@@ -283,6 +283,9 @@ def solve(
 class Reasoner:
 
     def __init__(self, config=None, *, timeout=60, isolated=False, cache_size=256, **options):
+        if type(isolated) is not bool:
+            raise ValueError("isolated must be True or False")
+        _limits(timeout)
         self.config = (
             config
             if isinstance(config, SolverConfig)
@@ -295,6 +298,8 @@ class Reasoner:
         self.hits = self.misses = 0
 
     def solve(self, theory, *, require_well_defined=False):
+        if type(require_well_defined) is not bool:
+            raise ValueError("require_well_defined must be True or False")
         import threading
         from time import monotonic
 
@@ -1143,14 +1148,27 @@ class Result:
         }
 
     def to_dict(
-        self, include=("arguments", "attacks", "extensions", "claims", "statuses", "strengths")
+        self,
+        include=("arguments", "attacks", "extensions", "claims", "statuses", "strengths"),
+        include_timings=False,
     ):
         out = {
             "status": self.status,
             "error": self.error,
             "config": self.config.to_dict(),
             "warnings": list(self.warnings) if self.evaluation.theory is not None else [],
+            "resource": (
+                {
+                    k: plain(v)
+                    for k, v in dict(self.evaluation.resource).items()
+                    if include_timings or "elapsed" not in k
+                }
+                if self.evaluation.resource
+                else None
+            ),
         }
+        if include_timings:
+            out["timings"] = plain(dict(self.evaluation.timings)) if self.evaluation.timings else {}
         if not self.ok:
             return out
         out["theory"] = self.evaluation.theory.to_source()
@@ -1171,8 +1189,8 @@ class Result:
             out["strengths"] = dict(self.strengths())
         return out
 
-    def to_json(self, **kwargs):
-        return json.dumps(self.to_dict(), ensure_ascii=False, **kwargs)
+    def to_json(self, include_timings=False, **kwargs):
+        return json.dumps(self.to_dict(include_timings=include_timings), ensure_ascii=False, **kwargs)
 
     def summary(self):
         if not self.ok:

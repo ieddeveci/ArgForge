@@ -490,7 +490,7 @@ For a claim *p*, when the semantics has at least one extension:
 - **Sceptical claim acceptance:** every extension contains an argument for *p*.
 - **Sceptical bearer:** one particular argument for *p* is in every extension.
 
-These are not assigned when the family of extensions is empty: "every extension" would then hold vacuously.
+When the family of extensions is empty, sceptical acceptance and the acceptance share are not assigned (`None`), because "every extension" would hold vacuously. Credulous acceptance is `False`, since no extension contains anything.
 
 The last is stronger than sceptical claim acceptance, because the supporting argument may differ between extensions.
 
@@ -499,8 +499,8 @@ The last is stronger than sceptical claim acceptance, because the supporting arg
 - `DEFENSIBLE` means credulously but not sceptically accepted.
 - `OVERRULED` means that in every extension, every argument for the claim is defeated by a member of that extension, not merely that none is selected.
 - `UNDECIDED` means that no extension contains an argument for the claim, but in at least one extension some argument for it is not defeated.
-- `UNSUPPORTED` means that no argument concludes the claim.
-- `NO_EXTENSIONS` means that the semantics has no extension at all, so no claim gets one of the statuses above.
+- `UNSUPPORTED` means that no argument concludes the claim. A queried claim with no supporting argument is `UNSUPPORTED` even when the family of extensions is empty.
+- `NO_EXTENSIONS` means that the semantics has no extension at all. Every supported claim then gets this status instead of one of the four above.
 
 **Three outcomes that must stay distinct:**
 
@@ -509,6 +509,8 @@ The last is stronger than sceptical claim acceptance, because the supporting arg
 | `[[]]` | A completed family containing the empty extension |
 | `[]` with a completed status | A completed, empty family (for example, no stable extension) |
 | No family (`null` in exported evaluations, absent in `Result.to_json`) with an incomplete status (`TIME_LIMIT`, `MEMORY_LIMIT`, …) | The computation did not finish |
+
+**What `Result.to_dict()` and `Result.to_json()` contain.** Every export has `status`, `error`, `config`, `warnings` and `resource`. The `resource` record says whether the computation completed (`complete`), in which `phase` it stopped, which limit applied (`limit_kind`, `limit_value`) and the counts observed so far, so an incomplete run can be diagnosed and reproduced. By default the export leaves out wall-clock measurements, so the same theory and settings always give the same export. With `include_timings=True` it also contains the elapsed times in `resource` and a `timings` breakdown by stage. Only a successful result also contains the theory, arguments, attacks, defeats, extensions, claims, argument statuses and strengths. An incomplete result therefore never shows an extension family, empty or otherwise.
 
 **What follows from this:**
 - "No stable extension" is a legitimate, completed result, not a timeout.

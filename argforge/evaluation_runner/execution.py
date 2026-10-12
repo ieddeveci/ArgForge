@@ -36,6 +36,20 @@ def _failure(source, config, seconds, status, phase, elapsed, reason):
     return r
 
 
+def _stop_worker(proc):
+    try:
+        os.killpg(proc.pid, signal.SIGKILL)
+    except (ProcessLookupError, PermissionError):
+        try:
+            proc.kill()
+        except ProcessLookupError:
+            pass
+    try:
+        proc.wait(timeout=10)
+    except subprocess.TimeoutExpired:
+        pass
+
+
 def evaluate_research(source, config, seconds=60, provenance=None):
     from explanation_and_analysis.experiments import ResearchResult, config_from_dict
     from engine.serialization import evaluation_from_dict
@@ -152,6 +166,4 @@ def evaluate_research(source, config, seconds=60, provenance=None):
                 if os.name == "nt":
                     proc.close()
                 elif proc.poll() is None:
-                    from .__main__ import terminate_tree
-
-                    terminate_tree(proc)
+                    _stop_worker(proc)
