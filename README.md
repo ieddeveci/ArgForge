@@ -484,17 +484,23 @@ The example shows why an abstraction sensitive to preferences must keep more tha
 
 ### Claims versus arguments
 
-For a claim *p*:
+For a claim *p*, when the semantics has at least one extension:
 
 - **Credulous acceptance:** some extension contains an argument for *p*.
 - **Sceptical claim acceptance:** every extension contains an argument for *p*.
 - **Sceptical bearer:** one particular argument for *p* is in every extension.
 
+These are not assigned when the family of extensions is empty: "every extension" would then hold vacuously.
+
 The last is stronger than sceptical claim acceptance, because the supporting argument may differ between extensions.
 
 **Claim statuses.** The statuses are `JUSTIFIED`, `DEFENSIBLE`, `OVERRULED`, `UNDECIDED`, `UNSUPPORTED` and `NO_EXTENSIONS`. Each has a precise predicate; they are not other names for IN/OUT/UNDEC.
+- `JUSTIFIED` means sceptically accepted: every extension contains an argument for the claim.
 - `DEFENSIBLE` means credulously but not sceptically accepted.
-- `OVERRULED` means that every argument for the claim is defeated in every extension, not merely that none is selected.
+- `OVERRULED` means that in every extension, every argument for the claim is defeated by a member of that extension, not merely that none is selected.
+- `UNDECIDED` means that no extension contains an argument for the claim, but in at least one extension some argument for it is not defeated.
+- `UNSUPPORTED` means that no argument concludes the claim.
+- `NO_EXTENSIONS` means that the semantics has no extension at all, so no claim gets one of the statuses above.
 
 **Three outcomes that must stay distinct:**
 
@@ -835,12 +841,18 @@ The generator does not sample uniformly from all ASPIC+ theories, and filtering 
 | Well-defined theory | İyi tanımlı kuram |
 | Transposition | Transpozisyon |
 | Contrapositive (of a strict rule) | Ters yönlü hâl |
+| Add contrapositives of strict rules | Katı kuralların ters yönlü hâllerini ekle |
 | Cyclic rules | Döngüsel kurallar |
+| Quotient construction | Bölüm yapısı |
 | Signature | İmza |
 | Class | Sınıf |
 | Representative | Temsilci |
 | Evaluation | Değerlendirme |
 | Explanation | Açıklama |
+| Theory generation | Kuram üretimi |
+| Random theory | Rastgele kuram |
+| Seed | Tohum |
+| Answer Set Programming (ASP) | Cevap Kümesi Programlama (ASP) |
 
 ## References
 
