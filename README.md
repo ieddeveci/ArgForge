@@ -841,18 +841,7 @@ The generator does not sample uniformly from all ASPIC+ theories, and filtering 
 | Well-defined theory | İyi tanımlı kuram |
 | Transposition | Transpozisyon |
 | Contrapositive (of a strict rule) | Ters yönlü hâl |
-| Add contrapositives of strict rules | Katı kuralların ters yönlü hâllerini ekle |
 | Cyclic rules | Döngüsel kurallar |
-| Quotient construction | Bölüm yapısı |
-| Signature | İmza |
-| Class | Sınıf |
-| Representative | Temsilci |
-| Evaluation | Değerlendirme |
-| Explanation | Açıklama |
-| Theory generation | Kuram üretimi |
-| Random theory | Rastgele kuram |
-| Seed | Tohum |
-| Answer Set Programming (ASP) | Cevap Kümesi Programlama (ASP) |
 
 ## References
 
